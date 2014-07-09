@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# This script uses inotifywait to execute a file when something changes. 
+
+# It takes two parameters. The second is optional.
+
+# The first parameter is the file to watch. Add -r to inotifywait options if 
+# the watched file is a directory. The second parameter is the command to run
+# when inotify reports an event. If omitted, the first parameter (watched file)
+# is run.
+
+# Usage:
+# inotifyrun $file_to_watch $file_to_execute[optional]
+
+# man inotifywait for more info
+
+while true; do
+	inotifywait -e close_write "$1"
+	if [ -z $2 ]; then
+		"$@"
+	else
+		# This must be in a subshell or shift will eat one parameter on
+	        # each run 
+		(
+		shift
+		"$@"
+		)
+	fi
+done

@@ -1,16 +1,24 @@
 #!/bin/sh
 
-# This script uses inotifywait to execute a file when something changes. 
+# This script uses inotifywait to execute a command when something changes in
+# the filesystem. 
 
-# It takes two parameters. The second is optional.
+# This script accepts two parameters. The second is optional.
 
-# The first parameter is the file to watch. Add -r to inotifywait options if 
-# the watched file is a directory. The second parameter is the command to run
-# when inotify reports an event. If omitted, the first parameter (watched file)
-# is run.
+# The first parameter is the file to watch. If the second parameter is unset,
+# then the first parameter is also the command that is executed in response to
+# the signal from inotify.
+
+# The second parameter, if set, is the command that is executed when inotify
+# reports a filesystem event on the first parameter.
+
+# Add -r to the inotifywait options if the watched file is a directory. 
 
 # Usage:
 # inotifyrun $file_to_watch $file_to_execute[optional]
+
+# Example, to make a remote copy of a file each time it changes:
+# inotifyrun ~/my_file rsync myfile user@remote.host:~/my_file
 
 # man inotifywait for more info
 

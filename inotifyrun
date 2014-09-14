@@ -22,7 +22,8 @@
 
 # man inotifywait for more info
 
-test ! $(command -v inotifywait) && { printf "inotifywait not found\n" ; exit 1 ; } 
+test ! $(command -v inotifywait) \
+	&& { printf "inotifywait: command not found\n" ; exit 1 ; }
 
 while true; do
 	inotifywait -e close_write "$1"

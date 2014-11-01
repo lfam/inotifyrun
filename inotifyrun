@@ -23,20 +23,19 @@
 # man inotifywait for more info
 
 test ! $(command -v inotifywait) \
-	&& { printf "inotifywait: command not found\n" ; exit 1 ; }
+    && { printf "inotifywait: command not found\n" ; exit 1 ; }
+
+FILE=$1
+
+if [ "$#" -eq 1 ]; then
+    CMD=$(realpath $FILE)
+else
+    shift
+    CMD=$@
+fi
 
 while true; do
-	inotifywait -re close_write "$1"
-	if [ -z $2 ]; then
-		printf "\n"
-		"$@"
-	else
-		# This must be in a subshell or shift will eat one parameter on
-	        # each run
-		(
-		shift
-		printf "\n"
-		"$@"
-		)
-	fi
+    inotifywait -qre close_write "$FILE"
+    echo "Running \`$@\`"
+    $($CMD)
 done

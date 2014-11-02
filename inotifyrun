@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # This script uses inotifywait to execute a command when something changes in
-# the filesystem. 
+# the filesystem.
 
 # This script accepts two parameters. The second is optional.
 
@@ -12,7 +12,7 @@
 # The second parameter, if set, is the command that is executed when inotify
 # reports a filesystem event on the first parameter.
 
-# Add -r to the inotifywait options if the watched file is a directory. 
+# Add -r to the inotifywait options if the watched file is a directory.
 
 # Usage:
 # inotifyrun $file_to_watch $file_to_execute[optional]
@@ -25,18 +25,18 @@
 test ! $(command -v inotifywait) \
 	&& { printf "inotifywait: command not found\n" ; exit 1 ; }
 
-while true; do
-	inotifywait -re close_write "$1"
-	if [ -z $2 ]; then
+if [ -z $2 ]; then
+	while true; do
+		inotifywait -re close_write "$@"
 		printf "\n"
 		"$@"
-	else
-		# This must be in a subshell or shift will eat one parameter on
-	        # each run 
-		(
-		shift
+	done
+else
+	file=$1
+	shift
+	while true; do
+		inotifywait -re close_write "$file"
 		printf "\n"
 		"$@"
-		)
-	fi
-done
+	done
+fi

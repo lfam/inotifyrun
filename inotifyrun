@@ -27,16 +27,16 @@ test ! $(command -v inotifywait) \
 
 if [ -z $2 ]; then
 	while true; do
+		"$@"
 		inotifywait -re close_write "$@"
 		printf "\n"
-		"$@"
 	done
 else
 	file=$1
 	shift
 	while true; do
+		"$@"
 		inotifywait -re close_write "$file"
 		printf "\n"
-		"$@"
 	done
 fi
